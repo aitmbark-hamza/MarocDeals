@@ -1060,7 +1060,7 @@ export const mockProducts: Product[] = [
     category: 'laptops',
     subcategory: 'business',
     condition: 'used',
-    price: 4.800 ,
+    price: 4800 ,
     currency: 'MAD',
 
     discount: 44,
