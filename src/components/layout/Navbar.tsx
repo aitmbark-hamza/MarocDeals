@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/components/ui/theme-provider';
-import Logo from '../../assets/logo.png';
 import { Search, Menu, X, Sun, Moon, Globe, Smartphone, ChevronDown, LogOut, User, Heart, Home, Star, MapPin } from 'lucide-react';
 import { categories, mockProducts, type Product } from '@/data/mockData';
 import { useToast } from '@/hooks/use-toast';
@@ -215,7 +214,7 @@ const Navbar = () => {
   >
     {/* Logo */}
     <img 
-      src={Logo} 
+      src="/logo.png" 
       alt="MarocDeals Logo" 
       className="w-8 h-8 rounded-lg shadow-card group-hover:shadow-hover transition-all duration-200"
     />
