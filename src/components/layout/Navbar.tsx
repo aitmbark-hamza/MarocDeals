@@ -324,7 +324,7 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Categories Dropdown */}
+       {/* Categories Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
@@ -338,20 +338,48 @@ const Navbar = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="start" 
-                className="w-56 bg-popover border-border shadow-hover z-50"
+                className="w-64 bg-popover border-border shadow-hover z-50 p-2"
                 sideOffset={4}
               >
-                {selectedCategories.map((category) => (
-                  <DropdownMenuItem key={category.id} asChild>
-                    <Link 
-                      to={`/categories/${category.id}`} 
-                      className="flex items-center space-x-3 px-3 py-2 transition-colors duration-150 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-                    >
-                      <span className="text-lg" aria-hidden="true">{category.icon}</span>
-                      <span>{t(`categories.${category.id}`)}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+                {selectedCategories.map((category, index) => {
+                  // Soft background colors for each category
+                  const bgColors = [
+                    'hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200',
+                    'hover:bg-green-50 hover:text-green-700 hover:border-green-200',
+                    'hover:bg-purple-50 hover:text-purple-700 hover:border-purple-200',
+                    'hover:bg-orange-50 hover:text-orange-700 hover:border-orange-200',
+                    'hover:bg-pink-50 hover:text-pink-700 hover:border-pink-200'
+                  ];
+                  
+                  const darkBgColors = [
+                    'dark:hover:bg-blue-950 dark:hover:text-blue-300 dark:hover:border-blue-800',
+                    'dark:hover:bg-green-950 dark:hover:text-green-300 dark:hover:border-green-800',
+                    'dark:hover:bg-purple-950 dark:hover:text-purple-300 dark:hover:border-purple-800',
+                    'dark:hover:bg-orange-950 dark:hover:text-orange-300 dark:hover:border-orange-800',
+                    'dark:hover:bg-pink-950 dark:hover:text-pink-300 dark:hover:border-pink-800'
+                  ];
+                  
+                  return (
+                    <DropdownMenuItem key={category.id} asChild>
+                      <Link 
+                        to={`/categories/${category.id}`} 
+                        className={`
+                          flex items-center justify-center px-4 py-3 mb-2 last:mb-0
+                          rounded-lg border border-transparent transition-all duration-300 ease-out
+                          hover:shadow-sm hover:-translate-y-0.5
+                          text-center font-medium
+                          ${bgColors[index % bgColors.length]}
+                          ${darkBgColors[index % darkBgColors.length]}
+                          focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
+                        `}
+                      >
+                        <span>{t(`categories.${category.id}`)}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+          
+              
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

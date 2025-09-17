@@ -80,8 +80,8 @@ export const mockProducts: Product[] = [
     favorites: 89,
     postedAt: '2024-01-15T10:30:00Z',
     priceHistory: [
-      { date: '2024-01-01', price: 16490 },
-      { date: '2024-01-15', price: 15999 }
+      { date: '2024-01-01', price:  17490.00 },
+      { date: '2024-01-15', price: 15999.00 }
     ]
   },
   {
@@ -1060,7 +1060,7 @@ export const mockProducts: Product[] = [
     category: 'laptops',
     subcategory: 'business',
     condition: 'used',
-    price: 4800 ,
+    price: 4800,
     currency: 'MAD',
 
     discount: 44,
