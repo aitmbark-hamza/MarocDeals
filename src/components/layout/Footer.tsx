@@ -20,14 +20,14 @@ const Footer = () => {
                 className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors group"
               >
                 <Mail className="w-5 h-5 group-hover:text-primary" />
-                <span>contact@electrocompare.ma</span>
+                <span>hamzahamzahh12345678@gmail.com</span>
               </a>
               <a 
                 href="tel:+212522123456"
                 className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors group"
               >
                 <Phone className="w-5 h-5 group-hover:text-primary" />
-                <span>+212 522 123 456</span>
+                <span>+212 624782877</span>
               </a>
               <div className="flex items-center gap-3 text-muted-foreground">
                 <MapPin className="w-5 h-5" />
@@ -43,7 +43,7 @@ const Footer = () => {
             </h3>
             <div className="flex gap-4">
               <a
-                href="https://instagram.com/electrocompare"
+                href="https://www.instagram.com/7_amzaa_hz/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 bg-muted rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 group"
@@ -52,7 +52,7 @@ const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="https://facebook.com/electrocompare"
+                href="https://www.facebook.com/mester.hamza.549"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 bg-muted rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 group"
@@ -61,7 +61,7 @@ const Footer = () => {
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="https://twitter.com/electrocompare"
+                href="https://x.com/Mr178898Mr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 bg-muted rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 group"
