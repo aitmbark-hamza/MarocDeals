@@ -115,17 +115,7 @@ const ProductCard = ({ product, featured = false }: ProductCardProps) => {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-          <div className="flex items-center">
-            <Eye className="w-3 h-3 mr-1" />
-            {product.views}
-          </div>
-          <div className="flex items-center">
-            <Heart className="w-3 h-3 mr-1" />
-            {product.favorites}
-          </div>
-        </div>
+      
 
         {/* Actions */}
         <div className="space-y-2">
@@ -136,7 +126,7 @@ const ProductCard = ({ product, featured = false }: ProductCardProps) => {
             asChild
           >
             <Link to={`/product/${product.id}`}>
-              {t('product.comparePrice')}
+              {t('View Details')}
             </Link>
           </Button>
           

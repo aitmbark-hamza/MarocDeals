@@ -2,18 +2,11 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import ProductCard from '@/components/common/ProductCard';
-import { ReviewsSection } from '@/components/common/ReviewsSection';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { TrendingUp, LogIn, Search } from 'lucide-react';
 import { mockProducts } from '@/data/mockData';
 import { useToast } from '@/hooks/use-toast';
 import HeroCarousel from '@/components/common/HeroCarousel';
-import Autoplay from 'embla-carousel-autoplay';
-import avitoLogo from '@/assets/avito-logo.png';
-import marjaneLogo from '@/assets/marjane-logo.png';
-import jumiaLogo from '@/assets/jumia-logo.png';
 
 // Counter Component مع format K/M
 function Counter({ target }: { target: number }) {
@@ -129,15 +122,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Reviews Section */}
-      <ReviewsSection
-        isLoggedIn={isLoggedIn}
-        currentUserName={currentUserName}
-        onRequireAuth={handleRequireAuth}
-        onSubmitReview={handleSubmitReview}
-        allowAssistantRate={true}
-      />
     </div>
   );
 };

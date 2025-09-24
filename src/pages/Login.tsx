@@ -1,69 +1,93 @@
-import React, { useState } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Lock, Facebook } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Mail, Lock } from 'lucide-react';
 
-const Login = () => {
-  const { t } = useTranslation();
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState<LoginForm>({ email: '', password: '' });
+  const { t } = useTranslation();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    
-    // Mock authentication
-    if (formData.email && formData.password) {
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userEmail', formData.email);
+
+    if (!formData.email || !formData.password) {
       toast({
-        title: t('auth.loginSuccess'),
-        description: t('auth.welcomeBack'),
-      });
-      navigate('/');
-    } else {
-      toast({
-        title: t('common.error'),
-        description: t('auth.fillAllFields'),
+        title: 'Error',
+        description: 'Please fill all fields',
         variant: 'destructive'
       });
+      return;
     }
-  };
 
-  const handleFacebookLogin = () => {
-    // Mock Facebook login
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('userEmail', 'facebook@user.com');
-    toast({
-      title: t('auth.loginSuccess'),
-      description: t('auth.welcomeBack'),
-    });
-    navigate('/');
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        // Store token & email
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userEmail', formData.email);
+
+        toast({
+          title: 'Success',
+          description: 'Logged in successfully',
+        });
+
+        navigate('/profile'); // redirect after login
+      } else {
+        toast({
+          title: 'Error',
+          description: data.message || 'Login failed',
+          variant: 'destructive'
+        });
+      }
+
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: 'Server error',
+        variant: 'destructive'
+      });
+      console.error(err);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">{t('auth.login')}</CardTitle>
+        <CardHeader>
+          <CardTitle>{t('auth.login')}</CardTitle>
           <CardDescription>{t('auth.loginDescription')}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">{t('auth.email')}</Label>
@@ -81,7 +105,6 @@ const Login = () => {
                 />
               </div>
             </div>
-            
             <div className="space-y-2">
               <Label htmlFor="password">{t('auth.password')}</Label>
               <div className="relative">
@@ -98,45 +121,19 @@ const Login = () => {
                 />
               </div>
             </div>
-
             <Button type="submit" className="w-full">
-              <Mail className="w-4 h-4 mr-2" />
-              {t('auth.loginWithEmail')}
+              {t('auth.login')}
             </Button>
           </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                {t('auth.or')}
-              </span>
-            </div>
-          </div>
-
-          <Button 
-            variant="outline" 
-            className="w-full"
-            onClick={handleFacebookLogin}
-          >
-            <Facebook className="w-4 h-4 mr-2" />
-            {t('auth.loginWithFacebook')}
-          </Button>
-
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              {t('auth.noAccount')}{' '}
-              <Link 
-                to="/signup" 
-                className="text-primary hover:underline font-medium"
-              >
-                {t('auth.createOne')}
-              </Link>
-            </p>
-          </div>
         </CardContent>
+        <CardFooter>
+          <p className="text-sm text-muted-foreground">
+            {t('auth.noAccount')}{' '}
+            <Link to="/signup" className="text-primary hover:underline">
+              {t('auth.createOne')}
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );

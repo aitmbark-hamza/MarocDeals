@@ -32,8 +32,15 @@ const Navbar = () => {
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
-    setIsAuthenticated(authStatus);
+    const checkAuth = () => {
+      const authStatus = localStorage.getItem('userEmail') !== null;
+      setIsAuthenticated(authStatus);
+    };
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
   }, [location]);
 
   // Filter products based on search query
@@ -143,7 +150,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
+    localStorage.setItem('isAuthenticated', 'false');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('username');
     setIsAuthenticated(false);
@@ -474,6 +481,7 @@ const Navbar = () => {
                   size="sm" 
                   className="flex items-center gap-2 max-w-32 truncate"
                   title={localStorage.getItem('username') || localStorage.getItem('userEmail') || ''}
+                  onClick={() => navigate('/profile')}
                 >
                   <User className="w-4 h-4 flex-shrink-0" />
                   <span className="hidden lg:inline truncate">
@@ -516,6 +524,11 @@ const Navbar = () => {
                 aria-label={`Favorites ${favoritesCount > 0 ? `(${favoritesCount})` : ''}`}
               >
                 <Heart className="w-4 h-4" />
+                {isAuthenticated && (
+                  <span className="ml-2 text-xs font-medium text-muted-foreground">
+                    {localStorage.getItem('username') || localStorage.getItem('userEmail')}
+                  </span>
+                )}
                 {favoritesCount > 0 && (
                   <Badge 
                     variant="destructive" 

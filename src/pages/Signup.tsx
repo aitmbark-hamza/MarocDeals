@@ -1,130 +1,128 @@
-import React, { useState } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Mail, Lock } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
-const Signup = () => {
-  const { t } = useTranslation();
+interface SignupForm {
+  email: string;
+  password: string;
+}
+
+const Signup: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState<SignupForm>({ email: '', password: '' });
+  const { t } = useTranslation();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
-    
-    // Mock registration
-    if (formData.username && formData.email && formData.password) {
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userEmail', formData.email);
-      localStorage.setItem('username', formData.username);
+
+    if (!formData.email || !formData.password) {
       toast({
-        title: t('auth.signupSuccess'),
-        description: t('auth.accountCreated'),
-      });
-      navigate('/');
-    } else {
-      toast({
-        title: t('common.error'),
-        description: t('auth.fillAllFields'),
+        title: 'Error',
+        description: 'Please fill all fields',
         variant: 'destructive'
       });
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Store authentication data
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('userEmail', formData.email);
+        
+        // Show success message
+        toast({
+          title: 'Success',
+          description: 'Registration successful! You can now log in.',
+        });
+        
+        // Navigate to login page
+        navigate('/login');
+      } else {
+        toast({
+          title: 'Error',
+          description: data.message || 'Registration failed',
+          variant: 'destructive'
+        });
+      }
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: 'Server error',
+        variant: 'destructive'
+      });
+      console.error(err);
     }
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">{t('auth.createAccount')}</CardTitle>
+        <CardHeader>
+          <CardTitle>{t('auth.signup')}</CardTitle>
           <CardDescription>{t('auth.signupDescription')}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">{t('auth.username')}</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="username"
-                  name="username"
-                  type="text"
-                  placeholder={t('auth.usernamePlaceholder')}
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="pl-10"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="email">{t('auth.email')}</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder={t('auth.emailPlaceholder')}
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="pl-10"
-                  required
-                />
-              </div>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="example@example.com"
+                value={formData.email}
+                onChange={handleChange}
+              />
             </div>
-            
             <div className="space-y-2">
               <Label htmlFor="password">{t('auth.password')}</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder={t('auth.passwordPlaceholder')}
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="pl-10"
-                  required
-                />
-              </div>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+              />
             </div>
-
             <Button type="submit" className="w-full">
-              <User className="w-4 h-4 mr-2" />
-              {t('auth.createAccount')}
+              {t('auth.signup')}
             </Button>
           </form>
-
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              {t('auth.haveAccount')}{' '}
-              <Link 
-                to="/login" 
-                className="text-primary hover:underline font-medium"
-              >
-                {t('auth.login')}
-              </Link>
-            </p>
-          </div>
         </CardContent>
+        <CardFooter>
+          <p className="text-sm text-muted-foreground">
+            {t('auth.alreadyHaveAccount')}{' '}
+            <Link to="/login" className="text-primary hover:underline">
+              {t('auth.login')}
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );

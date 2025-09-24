@@ -50,8 +50,8 @@ export const mockProducts: Product[] = [
     originalPrice: 16490.00,
     discount: 12,
     location: {
-      city: 'casablanca',
-      region: 'Grand Casablanca'
+      city: '',
+      region: '',
     },
     seller: {
       type: 'shop',
